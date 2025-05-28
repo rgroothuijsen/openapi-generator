@@ -442,12 +442,22 @@ public class RustAxumServerCodegen extends AbstractRustCodegen implements Codege
 
                 axumPath = axumPath.replace(paramSearch, paramReplace);
             }
-            pathMethodOpMap
-                    .computeIfAbsent(axumPath, (key) -> new ArrayList<>())
-                    .add(new MethodOperation(
-                            op.httpMethod.toLowerCase(Locale.ROOT),
-                            underscoredOperationId,
-                            op.vendorExtensions));
+
+            ArrayList<MethodOperation> pathMethods = pathMethodOpMap.get(path);
+            String lowercaseHttpMethod  = op.httpMethod.toLowerCase(Locale.ROOT);
+
+            // Prevent multiple declarations of the same operation and method
+            if (pathMethods == null || pathMethods.stream().noneMatch(pathMethod ->
+                            pathMethod.operationID.equals(underscoredOperationId)
+                                    && pathMethod.method.equals(lowercaseHttpMethod))) {
+
+                pathMethodOpMap
+                        .computeIfAbsent(axumPath, (key) -> new ArrayList<>())
+                        .add(new MethodOperation(
+                                lowercaseHttpMethod,
+                                underscoredOperationId,
+                                op.vendorExtensions));
+            }
         }
 
         // Determine the types that this operation produces. `getProducesInfo`
