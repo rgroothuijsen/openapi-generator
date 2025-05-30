@@ -296,7 +296,7 @@ public class RustClientCodegen extends AbstractRustCodegen implements CodegenCon
 
                     // If the type is a collection type, extend the name with the inner type to prevent name collisions
                     // in case multiple collections with different types are defined
-                    if (oneOf.isArray || oneOf.isMap) {
+                    if (oneOf.isArray) {
                         String collectionWithTypeName = oneOfModelName + oneOf.containerTypeMapped + oneOf.items.dataType;
                         oneOf.setName(collectionWithTypeName);
                     } else {
