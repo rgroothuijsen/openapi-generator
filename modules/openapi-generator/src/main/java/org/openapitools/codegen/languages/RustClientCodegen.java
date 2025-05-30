@@ -292,7 +292,16 @@ public class RustClientCodegen extends AbstractRustCodegen implements CodegenCon
                     // In-placed type (primitive), because there is no mapping or ref for it.
                     // use camelized `title` if present, otherwise use `type`
                     String oneOfName = Optional.ofNullable(schema.getTitle()).orElseGet(schema::getType);
-                    oneOf.setName(toModelName(oneOfName));
+                    String oneOfModelName = toModelName(oneOfName);
+
+                    // If the type is a collection type, extend the name with the inner type to prevent name collisions
+                    // in case multiple collections with different types are defined
+                    if (oneOf.isArray || oneOf.isMap) {
+                        String collectionWithTypeName = oneOfModelName + oneOf.containerTypeMapped + oneOf.items.dataType;
+                        oneOf.setName(collectionWithTypeName);
+                    } else {
+                        oneOf.setName(oneOfModelName);
+                    }
                 }
             }
 
