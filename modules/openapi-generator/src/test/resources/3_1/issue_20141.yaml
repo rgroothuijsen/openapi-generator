@@ -1,0 +1,32 @@
+openapi: 3.1.0
+info:
+  description: "test"
+  title: test
+  version: '4.3'
+components:
+  schemas:
+    EnumSchema:
+      enum:
+      - first_option
+      - second_option
+      title: EnumSchema
+      type: string
+paths:
+  /test:
+    get:
+      operationId: test
+      parameters:
+      - in: query
+        name: type
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EnumSchema'
+          title: Type
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Success

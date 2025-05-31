@@ -19,11 +19,16 @@ package org.openapitools.codegen.rust;
 
 import io.swagger.v3.oas.models.media.IntegerSchema;
 import org.openapitools.codegen.CodegenConstants;
+import org.openapitools.codegen.DefaultGenerator;
+import org.openapitools.codegen.config.CodegenConfigurator;
 import org.openapitools.codegen.languages.RustClientCodegen;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class RustClientCodegenTest {
 
@@ -241,6 +246,17 @@ public class RustClientCodegenTest {
 
         s.setFormat("int64");
         Assert.assertEquals(codegen.getSchemaType(s), "i64");
+    }
+
+    @Test
+    public void testEnumSchemaModuleImports() throws IOException {
+        Path target = Files.createTempDirectory("test");
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setGeneratorName("rust")
+                .setInputSpec("src/test/resources/3_1/issue_20141.yaml")
+                .setSkipOverwrite(false)
+                .setOutputDir(target.toAbsolutePath().toString().replace("\\", "/"));
+        new DefaultGenerator().opts(configurator.toClientOptInput()).generate();
     }
 
 }
