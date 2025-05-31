@@ -20,6 +20,7 @@ package org.openapitools.codegen.rust;
 import io.swagger.v3.oas.models.media.IntegerSchema;
 import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.DefaultGenerator;
+import org.openapitools.codegen.TestUtils;
 import org.openapitools.codegen.config.CodegenConfigurator;
 import org.openapitools.codegen.languages.RustClientCodegen;
 import org.testng.Assert;
@@ -256,7 +257,10 @@ public class RustClientCodegenTest {
                 .setInputSpec("src/test/resources/3_1/issue_20141.yaml")
                 .setSkipOverwrite(false)
                 .setOutputDir(target.toAbsolutePath().toString().replace("\\", "/"));
+        String optionSpec = "Option<models::EnumSchema>";
         new DefaultGenerator().opts(configurator.toClientOptInput()).generate();
+        Path outputPath = Path.of(target.toString(), "src/apis/default_api.rs");
+        TestUtils.assertFileContains(outputPath, optionSpec);
     }
 
 }
