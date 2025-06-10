@@ -26,10 +26,12 @@ import org.openapitools.codegen.languages.RustClientCodegen;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class RustClientCodegenTest {
 
@@ -258,9 +260,9 @@ public class RustClientCodegenTest {
                 .setSkipOverwrite(false)
                 .setOutputDir(target.toAbsolutePath().toString().replace("\\", "/"));
         String optionSpec = "Option<models::EnumSchema>";
-        new DefaultGenerator().opts(configurator.toClientOptInput()).generate();
+        List<File> files = new DefaultGenerator().opts(configurator.toClientOptInput()).generate();
+        files.forEach(File::deleteOnExit);
         Path outputPath = Path.of(target.toString(), "src/apis/default_api.rs");
         TestUtils.assertFileContains(outputPath, optionSpec);
     }
-
 }
